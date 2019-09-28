@@ -84,6 +84,7 @@ TBitField& TBitField::operator=(const TBitField &bf) // присваивание
 {
 	MemLen = bf.MemLen;
 	BitLen = bf.BitLen;
+	delete[] pMem;
 	pMem = new TELEM[MemLen]();
 	for (int i = 0; i < BitLen; i++) {
 		if (bf.GetBit(i)) {
@@ -108,15 +109,8 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
 
 int TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-	if (BitLen != bf.BitLen) {
-		return true;
-	}
-	for (int i = 0; i < BitLen; i++) {
-		if (GetBit(i) != bf.GetBit(i)) {
-			return true;
-		}
-	}
-	return false;
+
+	return !(*this == bf);
 }
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
