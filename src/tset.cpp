@@ -62,6 +62,9 @@ void TSet::DelElem(const int Elem) // исключение элемента мн
 
 TSet& TSet::operator=(const TSet &s) // присваивание
 {
+	if (this == &s) {
+		return *this;
+	}
 	MaxPower = s.MaxPower;
 	BitField = s.BitField;
 	return *this;
@@ -128,14 +131,12 @@ TSet TSet::operator~(void) // дополнение
 
 istream &operator>>(istream &istr, TSet &s) // ввод
 {
-	istr >> s.MaxPower;
 	istr >> s.BitField;
 	return istr;
 }
 
 ostream& operator<<(ostream &ostr, const TSet &s) // вывод
 {
-	ostr << s.MaxPower << endl;
-	ostr << s.BitField << endl;
+	ostr << s.BitField;
 	return ostr;
 }

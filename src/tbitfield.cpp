@@ -82,8 +82,12 @@ int TBitField::GetBit(const int n) const // получить значение б
 
 TBitField& TBitField::operator=(const TBitField &bf) // присваивание
 {
+	if (this == &bf) {
+		return *this;
+	}
 	MemLen = bf.MemLen;
 	BitLen = bf.BitLen;
+	delete[] pMem;
 	pMem = new TELEM[MemLen]();
 	for (int i = 0; i < BitLen; i++) {
 		if (bf.GetBit(i)) {
@@ -108,15 +112,8 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
 
 int TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-	if (BitLen != bf.BitLen) {
-		return true;
-	}
-	for (int i = 0; i < BitLen; i++) {
-		if (GetBit(i) != bf.GetBit(i)) {
-			return true;
-		}
-	}
-	return false;
+
+	return !(*this == bf);
 }
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"
@@ -156,28 +153,20 @@ TBitField TBitField::operator~(void) // отрицание
 
 istream &operator>>(istream &istr, TBitField &bf) // ввод
 {
-	istr >> bf.BitLen;
-	istr >> bf.MemLen;
-	if ((bf.BitLen < 0)||(bf.MemLen < 0)) {
-		throw std::runtime_error("Improbable lenght!");
-	}
-	if ((bf.BitLen - 1) / 32 + 1 > bf.MemLen) {
-		throw runtime_error("Improbable memoty size!");
-	}
-	delete[] bf.pMem;
-	bf.pMem = new TELEM[bf.MemLen];
-	for (int i = 0; i < bf.MemLen; i++) {
-		istr >> bf.pMem[i];
+	int element;
+	for (int i = 0; i < bf.BitLen; i++) {
+		istr >> element;
+		bf.SetBit(element);
 	}
 	return istr;
 }
 
 ostream &operator<<(ostream &ostr, const TBitField &bf) // вывод
 {
-	ostr << bf.BitLen << endl;
-	ostr << bf.MemLen << endl;
-	for (int i = 0; i < bf.MemLen; i++) {
-		ostr << bf.pMem[i] << endl;
+	for (int i = 0; i < bf.BitLen; i++) {
+		if (bf.GetBit(i)) {
+			ostr << i << ' ';
+		}
 	}
 	return ostr;
 }
